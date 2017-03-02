@@ -6,10 +6,12 @@ const cookieParser = require('cookie-parser');
 const bodyParser   = require('body-parser');
 const layouts      = require('express-ejs-layouts');
 const mongoose     = require('mongoose');
+var cors = require('cors');
 
 mongoose.connect('mongodb://localhost/journal-development');
 
 const app = express();
+app.use(cors());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -27,8 +29,20 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(layouts);
 
+
+
+var journals = require('./routes/api/journal-entries');
+app.use('/api/journals', journals);
+
+
+
 const index = require('./routes/index');
 app.use('/', index);
+
+// app.use(function(req, res) {
+//   res.sendfile(__dirname + '/public/index.html');
+// });
+
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
